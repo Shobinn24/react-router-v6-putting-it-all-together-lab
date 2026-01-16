@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
 import DirectorContainer from './pages/DirectorContainer';
@@ -10,7 +10,7 @@ import MovieCard from './pages/MovieCard';
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -24,7 +24,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
-    </div>
+    </BrowserRouter>
   );
 }
 
