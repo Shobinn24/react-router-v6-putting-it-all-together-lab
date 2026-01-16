@@ -1,52 +1,66 @@
-import { useState } from "react"
+import { useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 function DirectorForm() {
-  const [name, setName] = useState("")
-  const [bio, setBio] = useState("")
+  const navigate = useNavigate();
+  const { addDirector } = useOutletContext();
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    bio: '',
+  });
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const newDirector = { name, bio, movies: [] }
-    fetch("http://localhost:4000/directors", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(newDirector)
-    })
-    .then(r => {
-        if (!r.ok) { throw new Error("failed to add director")}
-        return r.json()
-    })
-    .then(data => {
-        console.log(data)
-        // handle context/state changes
-        // navigate to newly created director page
-    })
-    .catch(console.log)
-  }
+    e.preventDefault();
+    
+    const newDirector = {
+      id: String(Date.now()), // Generate a simple ID
+      name: formData.name,
+      bio: formData.bio,
+      movies: []
+    };
+
+    // Add to state
+    addDirector(newDirector);
+    
+    // Navigate to the new director's page
+    navigate(`/directors/${newDirector.id}`);
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   return (
     <div>
       <h2>Add New Director</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Director's Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Director's Bio"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          required
-        />
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Bio:</label>
+          <textarea
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <button type="submit">Add Director</button>
       </form>
     </div>
-  )
+  );
 }
 
-export default DirectorForm
+export default DirectorForm;
